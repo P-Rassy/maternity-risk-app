@@ -1,0 +1,30 @@
+{
+  "final_features": [
+    "age",
+    "age_x_bmi",
+    "bmi_first_visit",
+    "bmi_x_weight_gain",
+    "multiple_gestation__third_trimester",
+    "num_fetuses__third_trimester",
+    "phq2_change",
+    "poor_health_1st",
+    "prev_c_sections__first_visit",
+    "prev_comorbidities__first_visit",
+    "prev_deliveries__first_visit",
+    "prev_pregnancies__first_visit",
+    "third_trimester_anomalies__third_trimester",
+    "wexner_change"
+  ],
+  "target_col": "complications",
+  "recall_floor": 0.75,
+  "stack_threshold": 0.32227991223335267,
+  "base_models": [
+    "RandomForest",
+    "LightGBM",
+    "XGBoost"
+  ],
+  "stack_ap_test": 0.473,
+  "stack_auc_test": 0.817,
+  "stack_recall": 0.7727272727272727,
+  "stack_precision": 0.4594594594594595
+}
