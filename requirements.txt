@@ -1,8 +1,9 @@
 streamlit
-shap
-xgboost
-lightgbm
-scikit-learn
-pandas
 numpy
+pandas
 matplotlib
+joblib
+scikit-learn==1.6.1
+xgboost==3.2.0
+lightgbm==4.6.0
+shap==0.51.0
