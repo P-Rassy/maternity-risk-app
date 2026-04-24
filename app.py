@@ -12,6 +12,16 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 # =============================================================================
+# CUSTOM FUNCTIONS REQUIRED BY THE PREPROCESSOR
+# =============================================================================
+
+def to_str_array(x):
+    """Required by the saved preprocessor pipeline."""
+    x = pd.DataFrame(x).astype(object)
+    x = x.where(~x.isna(), "__MISSING__")
+    return x.astype(str).values
+
+# =============================================================================
 # PAGE CONFIG
 # =============================================================================
 
@@ -58,8 +68,8 @@ def predict(input_df):
 
 
 def get_shap_values(input_df):
-    X_trans  = preprocessor.transform(input_df)
-    xgb_est  = model.calibrated_classifiers_[0].estimator
+    X_trans   = preprocessor.transform(input_df)
+    xgb_est   = model.calibrated_classifiers_[0].estimator
     explainer = shap.TreeExplainer(xgb_est)
     sv        = explainer.shap_values(X_trans)
     try:
@@ -258,10 +268,10 @@ if submitted:
 
     with r1:
         st.metric(
-            label      = "Complication Risk Score",
-            value      = f"{prob:.1%}",
-            delta      = f"Threshold: {THRESHOLD:.1%}",
-            delta_color= "off",
+            label       = "Complication Risk Score",
+            value       = f"{prob:.1%}",
+            delta       = f"Threshold: {THRESHOLD:.1%}",
+            delta_color = "off",
         )
     with r2:
         if flag:
@@ -269,15 +279,19 @@ if submitted:
         else:
             st.success("🟢 LOW RISK — No immediate flag")
     with r3:
-        distance = abs(prob - THRESHOLD)
-        confidence = "High" if distance > 0.15 else "Moderate" if distance > 0.07 else "Low"
+        distance   = abs(prob - THRESHOLD)
+        confidence = (
+            "High"     if distance > 0.15 else
+            "Moderate" if distance > 0.07 else
+            "Low"
+        )
         st.metric("Prediction confidence", confidence)
 
     # ── Risk gauge bar ────────────────────────────────────────────────────────
     fig, ax = plt.subplots(figsize=(7, 1.2))
     bar_color = "#C0392B" if flag else "#27AE60"
-    ax.barh(["Risk"], [prob],       color=bar_color, height=0.5)
-    ax.barh(["Risk"], [1 - prob],   left=[prob], color="#EEEEEE", height=0.5)
+    ax.barh(["Risk"], [prob],     color=bar_color, height=0.5)
+    ax.barh(["Risk"], [1 - prob], left=[prob], color="#EEEEEE", height=0.5)
     ax.axvline(
         THRESHOLD, color="#2C3E50", lw=2, ls="--",
         label=f"Threshold ({THRESHOLD:.2f})"
